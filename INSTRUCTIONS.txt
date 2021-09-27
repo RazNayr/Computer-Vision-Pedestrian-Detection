@@ -1,0 +1,70 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Title: Fast Frontal Face and Eye Detection using Viola-Jones Object Detection
+Author: Ryan Camilleri (328400L)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Instruction 1: Environment Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. If a conda environemnt is used, activate environment and install opencv
+2. If an IDE is used, install opencv
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Instruction 2: Data Retrieval
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The project comes with 1000 images for both negative and positive files for reference. 
+
+If the whole datasets are required:
+1. Install positives data from [1] and store these in the positives directory.
+2. Install negatives data from [2] and store these in the negatives directory.
+
+[1] - https://www.kaggle.com/greatgamedota/ffhq-face-data-set
+[2] - https://www.kaggle.com/yeayates21/garage-detection-unofficial-ssl-challenge
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Instruction 3: Data Engineering
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. Run utils.py to create positives and negative descriptor files required for training
+2. Make sure OpenCV tools have been installed for using opencv_createsamples.exe
+3. Run the following command to generate the positives vector file required for training:
+
+Command: C:\Users\Owner\opencv\build\x64\vc15\bin/opencv_createsamples.exe -info positives.txt -w 24 -h 24 -num 70000 -vec positives.vec
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Instruction 4: Model Training
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. Create directories in which the trained models are to be saved
+2. Make sure OpenCV tools have been installed for using opencv_traincascade.exe
+3. Train using the below command.
+
+Hyperparameters:
+--> Window Size: This must have the same width and height as those used to create the vector file in Step 2.
+
+--> Number of stages: The more stages the classifier has, the better the accuracy. However, by having a very deep model, this may be overfit to training examples and so, a balance must be found.
+
+--> Number of positives: Number of positive images to use when training
+
+--> Number of negatives: Number of negative images to use when training
+
+--> Max False Alarm Rate: The max probability of falsely rejecting the null hypothesis for a particular test (0.5 by default)
+
+--> Minimum hit rate : The larger the minimum rate, the more features are required for the model to reach its goals. Essentially, with higher rates, the model is forced to overfit to the training data. If too low however, the model would not develop features that resemble faces well. (0.995 by default)
+
+Command: C:\Users\Owner\opencv\build\x64\vc15\bin/opencv_traincascade.exe -data $DIRNAME$/ -vec positives.vec -bg negatives.txt -w 24 -h 24 -numPos $NUMPOS$ -numNeg $NUMNEG$ -numStages $NUMSTAGES$ -maxFalseAlarmRate $FRRATE$ -minHitRate $HRRATE$
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Instruction 5: Model Evaluation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. To evaluate the pre-trained models for task 1, run task1.py
+1. To evaluate the OpenCV models on realtime frames for task 2, run task2.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
